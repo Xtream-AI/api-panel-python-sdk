@@ -1,0 +1,14 @@
+{
+  "id": 108190,
+  "name": "Movie 108190",
+  "icon": "https://cdn.example.com/icons/108190.png",
+  "year": 2015,
+  "rating": 7,
+  "is_serie": false,
+  "categories": [
+    {
+      "id": 666,
+      "name": "Category 666"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "type": "admin",
+  "reg_user_id": null,
+  "member_group_id": null,
+  "member_group_name": null,
+  "billing": null,
+  "permissions": null,
+  "key": {
+    "id": 1974,
+    "prefix": "pk_live_examplekey00",
+    "scopes": [
+      "lines:read",
+      "lines:write",
+      "packages:read",
+      "bouquets:read",
+      "streams:read",
+      "vods:read",
+      "resellers:read",
+      "resellers:write",
+      "subresellers:write"
+    ]
+  }
+}

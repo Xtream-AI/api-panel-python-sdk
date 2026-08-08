@@ -1,0 +1,5 @@
+{
+  "error": "rate_limited",
+  "message": "Rate limit exceeded (2/min).",
+  "request_id": "da65fafb-7231-443b-8120-decb945746a4"
+}

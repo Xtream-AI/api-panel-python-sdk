@@ -1,0 +1,5 @@
+{
+  "error": "missing_idempotency_key",
+  "message": "Idempotency-Key header is required for write operations.",
+  "request_id": "a5fc1e48-e5f0-452e-bf5b-0f2975f29384"
+}

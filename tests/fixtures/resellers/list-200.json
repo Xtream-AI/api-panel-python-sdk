@@ -1,0 +1,47 @@
+{
+  "items": [
+    {
+      "id": 2432,
+      "username": "scrubbed_user_2432",
+      "email": "reseller2432@example.com",
+      "member_group_id": 65,
+      "member_group_name": "Member Group 65",
+      "status": 1,
+      "billing_mode": "credits",
+      "credits": 947,
+      "max_users": 0,
+      "active_users": null,
+      "billing_expires": null,
+      "created_at": null
+    },
+    {
+      "id": 260595,
+      "username": "scrubbed_user_260595",
+      "email": "reseller260595@example.com",
+      "member_group_id": 4,
+      "member_group_name": "Member Group 4",
+      "status": 1,
+      "billing_mode": "credits",
+      "credits": 0.25,
+      "max_users": 0,
+      "active_users": null,
+      "billing_expires": null,
+      "created_at": 1578098423
+    },
+    {
+      "id": 260641,
+      "username": "scrubbed_user_260641",
+      "email": "reseller260641@example.com",
+      "member_group_id": 65,
+      "member_group_name": "Member Group 65",
+      "status": 1,
+      "billing_mode": "credits",
+      "credits": 2538,
+      "max_users": 0,
+      "active_users": null,
+      "billing_expires": 1783911599,
+      "created_at": 1579225251
+    }
+  ],
+  "next_cursor": 260641
+}

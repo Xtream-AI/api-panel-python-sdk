@@ -1,0 +1,8 @@
+{
+  "error": "validation_error",
+  "message": "Body missing required field 'package_id'",
+  "request_id": "b510eddf-bc38-4629-9762-98041d70c310",
+  "details": {
+    "field": "package_id"
+  }
+}

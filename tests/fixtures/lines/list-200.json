@@ -1,0 +1,81 @@
+{
+  "items": [
+    {
+      "id": 1512227,
+      "username": "scrubbed_user_1512227",
+      "password": "REDACTED_password",
+      "member_id": 2432,
+      "exp_date": 1813449600,
+      "max_connections": 4,
+      "is_trial": false,
+      "is_restreamer": false,
+      "enabled": true,
+      "admin_enabled": true,
+      "bouquets": [
+        2,
+        4,
+        14,
+        15,
+        82,
+        107,
+        108,
+        110,
+        112,
+        114,
+        115,
+        118,
+        120,
+        134
+      ],
+      "created_at": 1574874852
+    },
+    {
+      "id": 1527378,
+      "username": "scrubbed_user_1527378",
+      "password": "REDACTED_password",
+      "member_id": 2432,
+      "exp_date": 1790985600,
+      "max_connections": 3,
+      "is_trial": false,
+      "is_restreamer": false,
+      "enabled": true,
+      "admin_enabled": true,
+      "bouquets": [
+        2,
+        4,
+        15,
+        82,
+        107,
+        108,
+        110,
+        112,
+        114,
+        115,
+        118,
+        119,
+        120,
+        134
+      ],
+      "created_at": 1578154802
+    },
+    {
+      "id": 1532884,
+      "username": "scrubbed_user_1532884",
+      "password": "REDACTED_password",
+      "member_id": 260641,
+      "exp_date": 1784513884,
+      "max_connections": 5,
+      "is_trial": false,
+      "is_restreamer": false,
+      "enabled": true,
+      "admin_enabled": true,
+      "bouquets": [
+        15,
+        110,
+        118
+      ],
+      "created_at": 1579290632
+    }
+  ],
+  "next_cursor": 1532884
+}

@@ -1,0 +1,6 @@
+{
+  "Retry-After": "60",
+  "X-RateLimit-Limit": "2",
+  "X-RateLimit-Remaining": "0",
+  "X-RateLimit-Reset": "1786138563"
+}

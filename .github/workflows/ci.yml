@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.10', '3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+      - name: Install project + test extras
+        run: pip install -e '.[test]'
+      - name: Run unit tests + enforce coverage floor
+        # `--cov-fail-under=90` aborts the build if line coverage drops below
+        # 90% (spec §Success criteria).
+        run: |
+          pytest tests --ignore=tests/integration \
+              --cov=xtream_ai_panel_api \
+              --cov-report=term-missing \
+              --cov-fail-under=90

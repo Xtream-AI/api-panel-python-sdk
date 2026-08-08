@@ -1,0 +1,15 @@
+{
+  "id": 2432,
+  "username": "scrubbed_user_2432",
+  "email": "reseller2432@example.com",
+  "member_group_id": 65,
+  "member_group_name": "Member Group 65",
+  "status": 1,
+  "billing": {
+    "mode": "credits",
+    "credits": 947,
+    "max_users": null,
+    "active_users": null,
+    "billing_expires": null
+  }
+}

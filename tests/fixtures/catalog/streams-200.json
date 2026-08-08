@@ -1,0 +1,23 @@
+{
+  "items": [
+    {
+      "id": 30,
+      "name": "Stream 30",
+      "icon": "https://cdn.example.com/icons/30.png",
+      "categories": []
+    },
+    {
+      "id": 38,
+      "name": "Stream 38",
+      "icon": "https://cdn.example.com/icons/38.png",
+      "categories": []
+    },
+    {
+      "id": 39,
+      "name": "Stream 39",
+      "icon": "https://cdn.example.com/icons/39.png",
+      "categories": []
+    }
+  ],
+  "next_cursor": 39
+}

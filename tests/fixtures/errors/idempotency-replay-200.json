@@ -1,0 +1,14 @@
+{
+  "id": 172511952,
+  "username": "scrubbed_user_172511952",
+  "password": "REDACTED_password",
+  "member_id": 2432,
+  "exp_date": 1817674502,
+  "max_connections": 1,
+  "is_trial": false,
+  "is_restreamer": false,
+  "enabled": false,
+  "admin_enabled": true,
+  "bouquets": [],
+  "created_at": 1786138502
+}

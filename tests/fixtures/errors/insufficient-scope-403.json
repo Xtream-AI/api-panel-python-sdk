@@ -1,0 +1,5 @@
+{
+  "error": "insufficient_scope",
+  "message": "This API key lacks the required scope: packages:read.",
+  "request_id": "8fca6bc7-4050-4abb-b598-a5e093bc1d67"
+}

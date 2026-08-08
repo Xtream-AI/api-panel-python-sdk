@@ -1,0 +1,32 @@
+{
+  "items": [
+    {
+      "id": 83287,
+      "name": "Series 83287",
+      "icon": "",
+      "year": 2019,
+      "rating": 7.1,
+      "is_serie": true,
+      "categories": []
+    },
+    {
+      "id": 83288,
+      "name": "Series 83288",
+      "icon": "",
+      "year": 2019,
+      "rating": 7.1,
+      "is_serie": true,
+      "categories": []
+    },
+    {
+      "id": 83289,
+      "name": "Series 83289",
+      "icon": "",
+      "year": 2019,
+      "rating": 8.6,
+      "is_serie": true,
+      "categories": []
+    }
+  ],
+  "next_cursor": 83289
+}

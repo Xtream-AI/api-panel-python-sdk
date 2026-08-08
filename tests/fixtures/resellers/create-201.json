@@ -1,0 +1,15 @@
+{
+  "id": 262254,
+  "username": "scrubbed_user_262254",
+  "email": "reseller262254@example.com",
+  "member_group_id": 4,
+  "owner_id": 260897,
+  "credits_charged": 0,
+  "billing": {
+    "mode": "credits",
+    "credits": 25,
+    "max_users": null,
+    "active_users": null,
+    "billing_expires": null
+  }
+}
