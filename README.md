@@ -14,13 +14,13 @@ Full coverage of the native v1 endpoints, with typed models, typed exceptions, a
 Install directly from GitHub (no PyPI publication):
 
 ```bash
-pip install "git+https://github.com/Xtream-AI/api-panel-python-sdk.git@v1.0.0"
+pip install "git+https://github.com/Xtream-AI/api-panel-python-sdk.git@v1.1.0"
 ```
 
 Or in `requirements.txt`:
 
 ```
-xtream-ai-api-panel-sdk @ git+https://github.com/Xtream-AI/api-panel-python-sdk.git@v1.0.0
+xtream-ai-api-panel-sdk @ git+https://github.com/Xtream-AI/api-panel-python-sdk.git@v1.1.0
 ```
 
 ## Quickstart
@@ -73,6 +73,8 @@ Full documentation lives at [xtreamai.net/docs](https://xtreamai.net/docs/?page=
 - `client.resellers` — `list`, `create`, `get`, `update`, `billing`, `adjust_billing`
 - `client.me` — `get`
 - `client.health()` — public probe (no auth)
+
+`lines.update()` also accepts `bouquets` (`list[int]`) and `notes` (`str`, `""` clears them), and `lines.renew()` accepts `bouquets` — both usable with a reseller key, which on `update` is limited to those two fields and can only narrow the line's current bouquet set. These three arguments are **keyword-only** (`update(id, ..., bouquets=[...])`), so positional calls written against 1.0.0 keep binding `idempotency_key` as before. A bouquet list is capped at 512 ids by the API.
 
 ## Pagination
 

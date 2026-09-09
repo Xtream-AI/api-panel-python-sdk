@@ -236,6 +236,115 @@ def test_lines_update_new_fields(transport):
 
 
 @rsps.activate
+def test_lines_update_bouquets_and_notes(transport):
+    seen = {}
+    def cb(request):
+        seen["body"] = json.loads(request.body or "{}")
+        return (200, {}, json.dumps(LINE_JSON))
+    rsps.add_callback(rsps.POST, f"{BASE}/panel-api/v1/lines/100/update",
+                      callback=cb, content_type="application/json")
+    LinesResource(transport).update(100, bouquets=[4, "9"],
+                                    notes="renewed by billing")
+    assert seen["body"]["bouquets"] == [4, 9]
+    assert seen["body"]["notes"] == "renewed by billing"
+
+
+@rsps.activate
+def test_lines_update_empty_notes_clears_them(transport):
+    seen = {}
+    def cb(request):
+        seen["body"] = json.loads(request.body or "{}")
+        return (200, {}, json.dumps(LINE_JSON))
+    rsps.add_callback(rsps.POST, f"{BASE}/panel-api/v1/lines/100/update",
+                      callback=cb, content_type="application/json")
+    LinesResource(transport).update(100, notes="")
+    assert seen["body"] == {"notes": ""}
+
+
+@rsps.activate
+def test_lines_update_omits_bouquets_and_notes_when_none(transport):
+    seen = {}
+    def cb(request):
+        seen["body"] = json.loads(request.body or "{}")
+        return (200, {}, json.dumps(LINE_JSON))
+    rsps.add_callback(rsps.POST, f"{BASE}/panel-api/v1/lines/100/update",
+                      callback=cb, content_type="application/json")
+    LinesResource(transport).update(100, password="new")
+    assert "bouquets" not in seen["body"]
+    assert "notes" not in seen["body"]
+    assert seen["body"] == {"password": "new"}
+
+
+@rsps.activate
+def test_lines_renew_with_bouquets(transport):
+    seen = {}
+    def cb(request):
+        seen["body"] = json.loads(request.body or "{}")
+        return (200, {}, json.dumps(LINE_JSON))
+    rsps.add_callback(rsps.POST, f"{BASE}/panel-api/v1/lines/100/renew",
+                      callback=cb, content_type="application/json")
+    LinesResource(transport).renew(100, package_id=7, bouquets=[1, 2])
+    assert seen["body"]["package_id"] == 7
+    assert seen["body"]["bouquets"] == [1, 2]
+
+
+@rsps.activate
+def test_lines_renew_omits_bouquets_when_none(transport):
+    seen = {}
+    def cb(request):
+        seen["body"] = json.loads(request.body or "{}")
+        return (200, {}, json.dumps(LINE_JSON))
+    rsps.add_callback(rsps.POST, f"{BASE}/panel-api/v1/lines/100/renew",
+                      callback=cb, content_type="application/json")
+    LinesResource(transport).renew(100, package_id=7)
+    assert seen["body"] == {"package_id": 7}
+
+
+@rsps.activate
+def test_lines_update_keeps_idempotency_key_after_new_params(transport):
+    seen = {}
+    def cb(request):
+        seen["key"] = request.headers.get("Idempotency-Key")
+        return (200, {}, json.dumps(LINE_JSON))
+    rsps.add_callback(rsps.POST, f"{BASE}/panel-api/v1/lines/100/update",
+                      callback=cb, content_type="application/json")
+    LinesResource(transport).update(100, notes="n", idempotency_key="inv-77")
+    assert seen["key"] == "inv-77"
+
+
+@rsps.activate
+def test_lines_positional_idempotency_key_still_binds(transport):
+    seen = {}
+    def cb(request):
+        seen["key"] = request.headers.get("Idempotency-Key")
+        seen["body"] = json.loads(request.body or "{}")
+        return (200, {}, json.dumps(LINE_JSON))
+    rsps.add_callback(rsps.POST, f"{BASE}/panel-api/v1/lines/100/renew",
+                      callback=cb, content_type="application/json")
+    LinesResource(transport).renew(100, 7, "idem-positional")
+    assert seen["key"] == "idem-positional"
+    assert seen["body"] == {"package_id": 7}
+
+    rsps.add_callback(rsps.POST, f"{BASE}/panel-api/v1/lines/100/update",
+                      callback=cb, content_type="application/json")
+    LinesResource(transport).update(100, "pw", True, False, 2, 1700000000,
+                                    True, ["1.2.3.4"], ["ua"], "idem-positional-2")
+    assert seen["key"] == "idem-positional-2"
+    assert "bouquets" not in seen["body"]
+    assert "notes" not in seen["body"]
+
+
+def test_lines_bouquets_and_notes_are_keyword_only():
+    import inspect
+    for name in ("update", "renew"):
+        sig = inspect.signature(getattr(LinesResource, name))
+        for param in ("bouquets", "notes"):
+            if param in sig.parameters:
+                assert sig.parameters[param].kind is inspect.Parameter.KEYWORD_ONLY, \
+                    f"{name}({param}=...) must stay keyword-only"
+
+
+@rsps.activate
 def test_catalog_packages(transport):
     rsps.add(rsps.GET, f"{BASE}/panel-api/v1/packages", json={"items": [{
         "id": 66, "package_name": "Basic",

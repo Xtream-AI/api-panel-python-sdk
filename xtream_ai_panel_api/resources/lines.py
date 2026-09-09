@@ -88,6 +88,9 @@ class LinesResource:
         allowed_ips: list[str] | None = None,
         allowed_ua: list[str] | None = None,
         idempotency_key: str | None = None,
+        *,
+        bouquets: list[int] | None = None,
+        notes: str | None = None,
     ) -> Line:
 
 
@@ -100,6 +103,8 @@ class LinesResource:
         if admin_enabled is not None:   body["admin_enabled"] = admin_enabled
         if allowed_ips is not None:     body["allowed_ips"] = [str(x) for x in allowed_ips]
         if allowed_ua is not None:      body["allowed_ua"] = [str(x) for x in allowed_ua]
+        if bouquets is not None:        body["bouquets"] = [int(b) for b in bouquets]
+        if notes is not None:           body["notes"] = notes
         r = self._transport.request("POST", f"/panel-api/v1/lines/{id}/update",
                                      body=body, idempotency_key=idempotency_key)
         return Line.from_dict(r.body)
@@ -115,10 +120,14 @@ class LinesResource:
         return Line.from_dict(r.body)
 
     def renew(self, id: int, package_id: int | None = None,
-              idempotency_key: str | None = None) -> Line:
+              idempotency_key: str | None = None,
+              *,
+              bouquets: list[int] | None = None) -> Line:
         body: dict[str, Any] = {}
         if package_id is not None:
             body["package_id"] = package_id
+        if bouquets is not None:
+            body["bouquets"] = [int(b) for b in bouquets]
         r = self._transport.request("POST", f"/panel-api/v1/lines/{id}/renew",
                                      body=body, idempotency_key=idempotency_key)
         return Line.from_dict(r.body)
