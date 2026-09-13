@@ -91,6 +91,7 @@ class LinesResource:
         *,
         bouquets: list[int] | None = None,
         notes: str | None = None,
+        package_id: int | None = None,
     ) -> Line:
 
 
@@ -105,6 +106,7 @@ class LinesResource:
         if allowed_ua is not None:      body["allowed_ua"] = [str(x) for x in allowed_ua]
         if bouquets is not None:        body["bouquets"] = [int(b) for b in bouquets]
         if notes is not None:           body["notes"] = notes
+        if package_id is not None:      body["package_id"] = int(package_id)
         r = self._transport.request("POST", f"/panel-api/v1/lines/{id}/update",
                                      body=body, idempotency_key=idempotency_key)
         return Line.from_dict(r.body)

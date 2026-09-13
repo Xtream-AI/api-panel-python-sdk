@@ -2,6 +2,24 @@
 
 All notable changes to this project are documented here.
 
+## [1.2.0] - 2026-09-13
+
+### Added
+
+- `lines.update()`: new optional `package_id: int` argument. It is **keyword-only** and comes
+  after `notes`, so every existing positional call keeps binding to the same parameters. It is
+  sent only when passed (`None` omits the key from the body).
+- Changing the package applies the package template to an existing line without touching its
+  expiry date and without spending credits: `max_connections` and `is_restreamer` come from the
+  package, and any value passed explicitly in the same call wins over the package. When
+  `bouquets` is omitted the line inherits the new package's bouquets; when sent, the ids must be
+  a non-empty subset of the new package's bouquets.
+- The field is admin-only: a reseller key returns `403 admin_only_field`, and a trial package
+  returns `422 trial_package_not_allowed`. The panel does not store the package of a line, so
+  reading the line back does not report it. The package is a template applied at the moment of
+  the call and `Line` has no package field, so an integrator that needs to know which package a
+  line is on has to keep that mapping on its own side.
+
 ## [1.1.0] - 2026-09-09
 
 ### Added
@@ -39,5 +57,6 @@ All notable changes to this project are documented here.
 - Integration smoke test suite (skippable, hits a local harness).
 - GitHub Actions CI matrix on Python 3.10 / 3.11 / 3.12.
 
+[1.2.0]: https://github.com/Xtream-AI/api-panel-python-sdk/releases/tag/v1.2.0
 [1.1.0]: https://github.com/Xtream-AI/api-panel-python-sdk/releases/tag/v1.1.0
 [1.0.0]: https://github.com/Xtream-AI/api-panel-python-sdk/releases/tag/v1.0.0

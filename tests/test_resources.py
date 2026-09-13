@@ -345,6 +345,61 @@ def test_lines_bouquets_and_notes_are_keyword_only():
 
 
 @rsps.activate
+def test_lines_update_package_id(transport):
+    seen = {}
+    def cb(request):
+        seen["body"] = json.loads(request.body or "{}")
+        return (200, {}, json.dumps(LINE_JSON))
+    rsps.add_callback(rsps.POST, f"{BASE}/panel-api/v1/lines/100/update",
+                      callback=cb, content_type="application/json")
+    LinesResource(transport).update(100, package_id=7)
+    assert seen["body"] == {"package_id": 7}
+
+
+@rsps.activate
+def test_lines_update_package_id_omitted_no_key(transport):
+    seen = {}
+    def cb(request):
+        seen["body"] = json.loads(request.body or "{}")
+        return (200, {}, json.dumps(LINE_JSON))
+    rsps.add_callback(rsps.POST, f"{BASE}/panel-api/v1/lines/100/update",
+                      callback=cb, content_type="application/json")
+    LinesResource(transport).update(100, max_connections=3)
+    assert "package_id" not in seen["body"]
+    assert seen["body"] == {"max_connections": 3}
+
+
+@rsps.activate
+def test_lines_update_positional_1_0_0_still_binds(transport):
+    import inspect
+    seen = {}
+    def cb(request):
+        seen["key"] = request.headers.get("Idempotency-Key")
+        seen["body"] = json.loads(request.body or "{}")
+        return (200, {}, json.dumps(LINE_JSON))
+    rsps.add_callback(rsps.POST, f"{BASE}/panel-api/v1/lines/100/update",
+                      callback=cb, content_type="application/json")
+    LinesResource(transport).update(100, "pw", True, False, 2, 1700000000,
+                                    True, ["1.2.3.4"], ["ua"], "idem-1-0-0")
+    assert seen["key"] == "idem-1-0-0"
+    assert "package_id" not in seen["body"]
+    sig = inspect.signature(LinesResource.update)
+    assert sig.parameters["package_id"].kind is inspect.Parameter.KEYWORD_ONLY
+
+
+@rsps.activate
+def test_lines_update_notes_and_package_id(transport):
+    seen = {}
+    def cb(request):
+        seen["body"] = json.loads(request.body or "{}")
+        return (200, {}, json.dumps(LINE_JSON))
+    rsps.add_callback(rsps.POST, f"{BASE}/panel-api/v1/lines/100/update",
+                      callback=cb, content_type="application/json")
+    LinesResource(transport).update(100, notes="upgraded", package_id="9")
+    assert seen["body"] == {"notes": "upgraded", "package_id": 9}
+
+
+@rsps.activate
 def test_catalog_packages(transport):
     rsps.add(rsps.GET, f"{BASE}/panel-api/v1/packages", json={"items": [{
         "id": 66, "package_name": "Basic",

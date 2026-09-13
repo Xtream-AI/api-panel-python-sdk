@@ -14,13 +14,13 @@ Full coverage of the native v1 endpoints, with typed models, typed exceptions, a
 Install directly from GitHub (no PyPI publication):
 
 ```bash
-pip install "git+https://github.com/Xtream-AI/api-panel-python-sdk.git@v1.1.0"
+pip install "git+https://github.com/Xtream-AI/api-panel-python-sdk.git@v1.2.0"
 ```
 
 Or in `requirements.txt`:
 
 ```
-xtream-ai-api-panel-sdk @ git+https://github.com/Xtream-AI/api-panel-python-sdk.git@v1.1.0
+xtream-ai-api-panel-sdk @ git+https://github.com/Xtream-AI/api-panel-python-sdk.git@v1.2.0
 ```
 
 ## Quickstart
@@ -75,6 +75,8 @@ Full documentation lives at [xtreamai.net/docs](https://xtreamai.net/docs/?page=
 - `client.health()` — public probe (no auth)
 
 `lines.update()` also accepts `bouquets` (`list[int]`) and `notes` (`str`, `""` clears them), and `lines.renew()` accepts `bouquets` — both usable with a reseller key, which on `update` is limited to those two fields and can only narrow the line's current bouquet set. These three arguments are **keyword-only** (`update(id, ..., bouquets=[...])`), so positional calls written against 1.0.0 keep binding `idempotency_key` as before. A bouquet list is capped at 512 ids by the API.
+
+With an admin key, `lines.update()` also accepts `package_id` (`int`, keyword-only) to move a line to another package without renewing it: `client.lines.update(172504295, package_id=7)`. The package's `max_connections` and `is_restreamer` are applied, anything passed explicitly in the same call wins over the package, and omitting `bouquets` inherits the new package's bouquets. The expiry date is untouched and no credits are spent. A reseller key gets `403 admin_only_field`, a trial package `422 trial_package_not_allowed`. The panel does not store a line's package (`Line` has no package field): the package is a template applied at the moment of the call, so an integrator that needs to know which package a line is on has to keep that mapping on its own side.
 
 ## Pagination
 
