@@ -10,5 +10,7 @@
   "enabled": true,
   "admin_enabled": true,
   "bouquets": [],
-  "created_at": 1786138329
+  "created_at": 1786138329,
+  "email": "johndoe@example.com",
+  "notes": "Created via panel-api | WHMCS:135"
 }

@@ -12,6 +12,7 @@ def test_line_from_dict_populates_all_fields():
         "is_trial": False, "is_restreamer": False,
         "enabled": True, "admin_enabled": True,
         "bouquets": [2, 4, 14, 15], "created_at": 1574874852,
+        "email": "johndoe@example.com", "notes": "Created via panel-api | WHMCS:135",
     }
     line = Line.from_dict(j)
     assert line.id == 1512227
@@ -21,6 +22,21 @@ def test_line_from_dict_populates_all_fields():
     assert line.exp_date.tzinfo is timezone.utc
     assert line.bouquets == [2, 4, 14, 15]
     assert line.enabled is True
+    assert line.email == "johndoe@example.com"
+    assert line.notes == "Created via panel-api | WHMCS:135"
+
+
+def test_line_defaults_email_and_notes_when_absent():
+    j = {
+        "id": 1, "username": "x", "password": "y", "member_id": 1,
+        "exp_date": 1900000000, "max_connections": 1,
+        "is_trial": False, "is_restreamer": False,
+        "enabled": True, "admin_enabled": True,
+        "bouquets": [1], "created_at": 1700000000,
+    }
+    line = Line.from_dict(j)
+    assert line.email == ""
+    assert line.notes == ""
 
 
 def test_line_accepts_null_exp_date():

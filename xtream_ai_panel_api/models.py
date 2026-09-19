@@ -28,6 +28,8 @@ class Line:
     admin_enabled: bool
     bouquets: list[int]
     created_at: datetime | None
+    email: str = ""
+    notes: str = ""
 
     @classmethod
     def from_dict(cls, j: dict[str, Any]) -> "Line":
@@ -44,6 +46,8 @@ class Line:
             admin_enabled=bool(j.get("admin_enabled", False)),
             bouquets=[int(x) for x in j.get("bouquets", [])],
             created_at=_ts_to_dt(j.get("created_at")),
+            email=str(j.get("email", "")),
+            notes=str(j.get("notes", "")),
         )
 
 

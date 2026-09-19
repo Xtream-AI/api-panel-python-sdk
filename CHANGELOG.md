@@ -2,6 +2,23 @@
 
 All notable changes to this project are documented here.
 
+## [1.3.0] - 2026-09-19
+
+### Added
+
+- `Line` exposes `email` and `notes` (both strings, `""` when the panel has none). The panel
+  returns them on every line response since 2026-09-14: `get`, `list`, `create`, `update` and
+  `renew`. Admin keys read the admin contact record and reseller keys read their own reseller
+  contact record. Lines created through `create()` carry a `Created via panel-api | ` prefix in
+  front of the notes that were sent, which is where an integration keeps its reconciliation tag.
+  Older panels that do not send the fields still parse: both default to `""`.
+
+### Notes
+
+- `403 insufficient_scope` responses now include `required_scope` in the error `details`
+  (`AuthorizationException.details["required_scope"]`), naming the scope the key is missing.
+  No SDK change was needed to read it.
+
 ## [1.2.0] - 2026-09-13
 
 ### Added
@@ -57,6 +74,7 @@ All notable changes to this project are documented here.
 - Integration smoke test suite (skippable, hits a local harness).
 - GitHub Actions CI matrix on Python 3.10 / 3.11 / 3.12.
 
+[1.3.0]: https://github.com/Xtream-AI/api-panel-python-sdk/releases/tag/v1.3.0
 [1.2.0]: https://github.com/Xtream-AI/api-panel-python-sdk/releases/tag/v1.2.0
 [1.1.0]: https://github.com/Xtream-AI/api-panel-python-sdk/releases/tag/v1.1.0
 [1.0.0]: https://github.com/Xtream-AI/api-panel-python-sdk/releases/tag/v1.0.0

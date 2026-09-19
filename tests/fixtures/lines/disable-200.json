@@ -10,5 +10,7 @@
   "enabled": false,
   "admin_enabled": true,
   "bouquets": [],
-  "created_at": 1786138329
+  "created_at": 1786138329,
+  "email": "",
+  "notes": ""
 }

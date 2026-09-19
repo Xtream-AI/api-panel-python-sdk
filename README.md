@@ -14,13 +14,13 @@ Full coverage of the native v1 endpoints, with typed models, typed exceptions, a
 Install directly from GitHub (no PyPI publication):
 
 ```bash
-pip install "git+https://github.com/Xtream-AI/api-panel-python-sdk.git@v1.2.0"
+pip install "git+https://github.com/Xtream-AI/api-panel-python-sdk.git@v1.3.0"
 ```
 
 Or in `requirements.txt`:
 
 ```
-xtream-ai-api-panel-sdk @ git+https://github.com/Xtream-AI/api-panel-python-sdk.git@v1.2.0
+xtream-ai-api-panel-sdk @ git+https://github.com/Xtream-AI/api-panel-python-sdk.git@v1.3.0
 ```
 
 ## Quickstart
