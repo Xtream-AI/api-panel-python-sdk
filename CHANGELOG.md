@@ -2,6 +2,20 @@
 
 All notable changes to this project are documented here.
 
+## [Unreleased]
+
+### Documentation
+
+- Sub-resellers with a reseller key. Since 2026-09-25 the panel accepts two opt-in scopes on
+  reseller keys: `subresellers:read` (`resellers` `list`, `get` and `billing` over the caller's
+  own sub-resellers, two levels down) and `subresellers:credits` (``adjust_billing()`` becomes a transfer from
+  the caller's balance). The request and response shapes are the same as with an admin key, so
+  every 1.x release already supports them; the README now documents the scopes and the new slugs
+  (`sub_reseller_view_not_allowed`, `sub_reseller_debit_disabled`, `debit_direct_only`,
+  `duplicate_transfer`, `mismatched_mode`, `transfer_failed`) with the exception each one raises.
+- Tests pin that `409 duplicate_transfer` is raised without a retry and that the new 403 slugs map
+  to the authorization exception.
+
 ## [1.3.0] - 2026-09-19
 
 ### Added

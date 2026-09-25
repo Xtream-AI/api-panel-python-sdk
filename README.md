@@ -78,6 +78,35 @@ Full documentation lives at [xtreamai.net/docs](https://xtreamai.net/docs/?page=
 
 With an admin key, `lines.update()` also accepts `package_id` (`int`, keyword-only) to move a line to another package without renewing it: `client.lines.update(172504295, package_id=7)`. The package's `max_connections` and `is_restreamer` are applied, anything passed explicitly in the same call wins over the package, and omitting `bouquets` inherits the new package's bouquets. The expiry date is untouched and no credits are spent. A reseller key gets `403 admin_only_field`, a trial package `422 trial_package_not_allowed`. The panel does not store a line's package (`Line` has no package field): the package is a template applied at the moment of the call, so an integrator that needs to know which package a line is on has to keep that mapping on its own side.
 
+### Sub-resellers with a reseller key
+
+The same `resellers` methods work with a **reseller** key when the key carries the opt-in scopes, with no SDK change needed (any 1.x release works):
+
+- `subresellers:read` enables `list`, `get` and `billing`. The key sees its own sub-resellers and their sub-resellers (two levels down, the same accounts the panel shows under **Resellers Network**), never itself, its parent, its siblings or an administrator account. An ID outside that tree raises `NotFoundException`, exactly like an ID that does not exist. The reseller's member group needs **Can Create Subresellers**, otherwise every call raises `AuthorizationException` with slug `sub_reseller_view_not_allowed`.
+- `subresellers:credits` turns `adjust_billing()` into a **transfer** from the caller's own balance: a positive `delta` moves credits from the caller to the sub-reseller, and a negative `delta` takes them back. Taking credits back needs the panel's **Reseller credit debit** setting and works only on direct sub-resellers. Both accounts must be in credits mode.
+
+```python
+import os
+reseller = PanelApiClient(base_url="https://panel.example.com", token=os.environ["RESELLER_KEY"])
+
+for sub in reseller.resellers.list().items:
+    print(sub.username, sub.billing.credits if sub.billing else None)
+
+after = reseller.resellers.adjust_billing(262260, delta=25, reason="WHMCS invoice #1042")
+```
+
+| Slug | Exception | Meaning |
+|---|---|---|
+| `insufficient_credits` (402) | `InsufficientCreditsException` | The caller does not have enough credits to transfer. |
+| `negative_balance_not_allowed` (422) | `ValidationException` | A negative `delta` larger than the sub-reseller's balance. |
+| `mismatched_mode` (422) | `ValidationException` | The caller or the sub-reseller is in users (slots) mode. |
+| `sub_reseller_debit_disabled` (403) | `AuthorizationException` | Negative `delta` while the panel's Reseller credit debit setting is off. |
+| `debit_direct_only` (403) | `AuthorizationException` | Negative `delta` on a sub-reseller that is not a direct child. |
+| `duplicate_transfer` (409) | `ConflictException` | The same transfer (same sub-reseller and amount) within 5 seconds. Not retried by the SDK. |
+| `transfer_failed` (500) | `ServerException` | Nothing was moved. The SDK retries it with the same `Idempotency-Key`. |
+
+With an admin key `adjust_billing()` keeps its original meaning: an adjustment that does not debit anyone. `list` and `get` do not return `owner_id`, so `Reseller.owner_id` is `null` on those calls; it is filled on the responses of `create` and `update`.
+
 ## Pagination
 
 `list()` methods return `PaginatedResponse[T]` with `.items` and `.next_cursor`. The SDK does **not** loop automatically — you drive it:
@@ -134,12 +163,12 @@ All exceptions extend `xtream_ai_panel_api.exceptions.PanelApiException`.
 | `BadRequestException`           | 400 | `invalid_body`, `missing_idempotency_key` |
 | `AuthenticationException`       | 401 | `invalid_key`, `caller_disabled` |
 | `InsufficientCreditsException`  | 402 & 422 | `insufficient_credits`, `billing_expired`, `insufficient_slots` |
-| `AuthorizationException`        | 403 | `insufficient_scope`, `admin_only_endpoint`, `admin_only_field`, `owner_must_be_self`, `delete_not_allowed`, `password_change_not_allowed`, `sub_reseller_creation_not_allowed` |
+| `AuthorizationException`        | 403 | `insufficient_scope`, `admin_only_endpoint`, `admin_only_field`, `owner_must_be_self`, `delete_not_allowed`, `password_change_not_allowed`, `sub_reseller_creation_not_allowed`, `sub_reseller_view_not_allowed`, `sub_reseller_debit_disabled`, `debit_direct_only` |
 | `NotFoundException`             | 404 | `not_found`, `caller_not_found` |
-| `ConflictException`             | 409 | `idempotency_conflict` (in_flight is retried transparently) |
-| `ValidationException`           | 422 | `validation_error` + many domain-specific slugs (`cap_below_active_users`, `negative_balance_not_allowed`, `no_sub_reseller_setup`, `owner_id_required`, `line_has_no_expiry`, `renew_with_trial_package_not_allowed`, …). Use `.field` for the failing field name. |
+| `ConflictException`             | 409 | `idempotency_conflict`, `duplicate_transfer` (in_flight is retried transparently) |
+| `ValidationException`           | 422 | `validation_error` + many domain-specific slugs (`cap_below_active_users`, `negative_balance_not_allowed`, `no_sub_reseller_setup`, `owner_id_required`, `line_has_no_expiry`, `renew_with_trial_package_not_allowed`, `mismatched_mode`, …). Use `.field` for the failing field name. |
 | `RateLimitException`            | 429 | `rate_limited` (`.retry_after` in seconds) |
-| `ServerException`               | 5xx | `internal_error`, `delete_failed`, `network_error` |
+| `ServerException`               | 5xx | `internal_error`, `delete_failed`, `transfer_failed`, `network_error` |
 | `ServiceUnavailableException`   | 503 | `api_disabled`, `service_unavailable` |
 | `UnknownApiException`           | other | fallback for status codes the SDK doesn't recognize |
 

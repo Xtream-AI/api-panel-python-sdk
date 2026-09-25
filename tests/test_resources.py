@@ -553,6 +553,33 @@ def test_resellers_adjust_billing(transport):
 
 
 @rsps.activate
+def test_resellers_duplicate_transfer_is_not_retried(transport):
+    from xtream_ai_panel_api.exceptions import ConflictException
+    rsps.add(rsps.POST, f"{BASE}/panel-api/v1/resellers/1/billing/adjust",
+             json={"error": "duplicate_transfer",
+                   "message": "The same transfer to this sub-reseller was just processed.",
+                   "request_id": "r1"}, status=409)
+    with pytest.raises(ConflictException) as ei:
+        ResellersResource(transport).adjust_billing(1, delta=10.0)
+    assert ei.value.slug == "duplicate_transfer"
+    assert len(rsps.calls) == 1
+
+
+@pytest.mark.parametrize("slug", ["sub_reseller_debit_disabled",
+                                  "debit_direct_only",
+                                  "sub_reseller_view_not_allowed"])
+@rsps.activate
+def test_resellers_debit_rules_map_to_authorization(transport, slug):
+    from xtream_ai_panel_api.exceptions import AuthorizationException
+    rsps.add(rsps.POST, f"{BASE}/panel-api/v1/resellers/1/billing/adjust",
+             json={"error": slug, "message": "x", "request_id": "r1"},
+             status=403)
+    with pytest.raises(AuthorizationException) as ei:
+        ResellersResource(transport).adjust_billing(1, delta=-1.0)
+    assert ei.value.slug == slug
+
+
+@rsps.activate
 def test_me_get(transport):
     rsps.add(rsps.GET, f"{BASE}/panel-api/v1/me",
              json={"type": "admin", "reg_user_id": None,
