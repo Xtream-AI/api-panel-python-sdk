@@ -56,6 +56,17 @@ def test_connections_parse():
         assert conn.content_type in ("live", "movie")
 
 
+def test_populated_connections_carry_content():
+    conns = [Connection.from_dict(c) for c in load("lines/connections-populated-200.json")["items"]]
+    assert [c.content_type for c in conns] == ["live", "movie", "movie"]
+    for c in conns:
+        assert c.content_id is not None
+        assert c.content_name != ""
+    assert conns[0].is_serie is None
+    assert conns[1].is_serie is False
+    assert conns[2].is_serie is True
+
+
 def test_packages_parse_with_float_credits():
     for p in load("catalog/packages-200.json")["items"]:
         pkg = Package.from_dict(p)

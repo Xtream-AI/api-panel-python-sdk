@@ -15,6 +15,12 @@ All notable changes to this project are documented here.
   `duplicate_transfer`, `mismatched_mode`, `transfer_failed`) with the exception each one raises.
 - Tests pin that `409 duplicate_transfer` is raised without a retry and that the new 403 slugs map
   to the authorization exception.
+- `lines.connections`: panels updated on 2026-10-07 fill `content_id` and `content_name` for every
+  session whose channel or VOD still exists, and report VOD sessions as `content_type: "movie"`
+  (with `is_serie` for series episodes). Earlier panels returned them empty and labeled every
+  session `"live"`. The response shape did not change, so no SDK change is needed; the
+  `connections-populated-200.json` fixture now reflects the corrected output and a parity test
+  pins it.
 
 ## [1.3.0] - 2026-09-19
 
